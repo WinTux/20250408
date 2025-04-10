@@ -4,9 +4,15 @@ namespace Plataforma.Repositories
 {
     public class ImplEstudianteRepository : IEstudianteRepository
     {
+        private readonly InstitutoDbContext _context;
+        public ImplEstudianteRepository(InstitutoDbContext context)
+        {
+            _context = context;
+        }
         public IEnumerable<Estudiante> GetEstudiantes()
         {
-            var estudiantes = new List<Estudiante>
+            
+            /*var estudiantes = new List<Estudiante>
             {
                 new Estudiante() {
                     id = 1,
@@ -29,7 +35,8 @@ namespace Plataforma.Repositories
                     correo = "sp_ra@gmail.com",
                     telefono = 123456789
                 }
-            };
+            };*/
+
             return estudiantes;
         }
         public Estudiante GetEstudianteById(int id)

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Plataforma.DTO;
 using Plataforma.Models;
 using Plataforma.Repositories;
 
@@ -10,25 +12,28 @@ namespace Plataforma.Controllers
     public class EstudianteController : ControllerBase
     {
         private readonly IEstudianteRepository _estudianteRepository;
-        public EstudianteController(IEstudianteRepository estudianteRepository)
+        private readonly IMapper _mapper;
+
+        public EstudianteController(IEstudianteRepository estudianteRepository, IMapper mapper)
         {
             _estudianteRepository = estudianteRepository;
+            _mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Estudiante>> GetEstudiantes()
+        public ActionResult<IEnumerable<EstudianteReadDTO>> GetEstudiantes()
         {
             var estudiantes = _estudianteRepository.GetEstudiantes();
-            return Ok(estudiantes); // 200 OK
+            return Ok(_mapper.Map<IEnumerable<EstudianteReadDTO>>(estudiantes)); // 200 OK
         }
         [HttpGet("{id}")]
-        public ActionResult<Estudiante> GetEstudianteById(int id)
+        public ActionResult<EstudianteReadDTO> GetEstudianteById(int id)
         {
             var estudiante = _estudianteRepository.GetEstudianteById(id);
             if (estudiante == null)
             {
                 return NotFound(); // 404 Not Found
             }
-            return Ok(estudiante); // 200 OK
+            return Ok(_mapper.Map<EstudianteReadDTO>(estudiante)); // 200 OK
         }
     }
 }
