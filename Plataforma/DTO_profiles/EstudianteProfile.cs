@@ -9,7 +9,8 @@ namespace Plataforma.DTO_profiles
         public EstudianteProfile()
         {
             CreateMap<Estudiante, EstudianteReadDTO>(); // ----->
-            
+            CreateMap<EstudianteCreateDTO, Estudiante>(); // ----->
+            CreateMap<EstudianteUpdateDTO, Estudiante>();
         }
     }
 }

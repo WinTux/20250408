@@ -5,7 +5,7 @@ namespace Plataforma.Repositories
 {
     public class InstitutoDbContext : DbContext
     {
-        DbSet<Estudiante> estudiantes { get; set; }
+        public DbSet<Estudiante> estudiantes { get; set; }
         public InstitutoDbContext(DbContextOptions<InstitutoDbContext> options) : base(options)
         {
         }

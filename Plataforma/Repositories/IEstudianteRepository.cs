@@ -6,6 +6,8 @@ namespace Plataforma.Repositories
     {
         IEnumerable<Estudiante> GetEstudiantes();
         Estudiante GetEstudianteById(int id);
-        
+        void CreateEstudiante(Estudiante estudiante);
+        bool UpdateEstudiante(Estudiante estudiante);
+        bool GuardarCambios();
     }
 }
