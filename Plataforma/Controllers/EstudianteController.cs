@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Plataforma.DTO;
 using Plataforma.Models;
@@ -61,6 +62,29 @@ namespace Plataforma.Controllers
                 return NotFound(); // 404 Not Found
             }
             _mapper.Map(estudianteUpdateDTO, estudiante);
+            _estudianteRepository.UpdateEstudiante(estudiante);
+            _estudianteRepository.GuardarCambios();
+            return NoContent(); // 204 No Content
+        }
+        [HttpPatch("{id}")] // localhost:5000/api/estudiante/{id} [PATCH]
+        public ActionResult PartialEstudianteUpdate(int id, JsonPatchDocument<EstudianteUpdateDTO> estPatch)
+        {
+            if (estPatch == null)
+            {
+                return BadRequest(); // 400 Bad Request
+            }
+            var estudiante = _estudianteRepository.GetEstudianteById(id);
+            if (estudiante == null)
+            {
+                return NotFound(); // 404 Not Found
+            }
+            var estudianteToPatch = _mapper.Map<EstudianteUpdateDTO>(estudiante);
+            estPatch.ApplyTo(estudianteToPatch, ModelState);
+            if (!TryValidateModel(estudianteToPatch))
+            {
+                return ValidationProblem(ModelState); // 422 Unprocessable Entity
+            }
+            _mapper.Map(estudianteToPatch, estudiante);
             _estudianteRepository.UpdateEstudiante(estudiante);
             _estudianteRepository.GuardarCambios();
             return NoContent(); // 204 No Content

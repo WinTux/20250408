@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using Plataforma.Repositories;
 
 namespace Plataforma
@@ -11,7 +12,7 @@ namespace Plataforma
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(s=>s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddDbContext<InstitutoDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
