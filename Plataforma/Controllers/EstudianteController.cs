@@ -89,5 +89,17 @@ namespace Plataforma.Controllers
             _estudianteRepository.GuardarCambios();
             return NoContent(); // 204 No Content
         }
+        [HttpDelete("{id}")] // localhost:5000/api/estudiante/{id} [DELETE]
+        public ActionResult DeleteEstudiante(int id)
+        {
+            var estudiante = _estudianteRepository.GetEstudianteById(id);
+            if (estudiante == null)
+            {
+                return NotFound(); // 404 Not Found
+            }
+            _estudianteRepository.DeleteEstudiante(estudiante);
+            _estudianteRepository.GuardarCambios();
+            return NoContent(); // 204 No Content
+        }
     }
 }

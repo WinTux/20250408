@@ -66,6 +66,12 @@ namespace Plataforma.Repositories
             */
             return true;
         }
+        public void DeleteEstudiante(Estudiante estudiante)
+        {
+            if (estudiante == null)
+                throw new ArgumentNullException(nameof(estudiante));
+            _context.estudiantes.Remove(estudiante); // Eliminar un estudiante de la base de datos
+        }
         public bool GuardarCambios()
         {
             return (_context.SaveChanges() >= 0); // Guardar los cambios en la base de datos
