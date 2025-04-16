@@ -18,7 +18,7 @@ namespace Plataforma
                 options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             // DbContext (agregar)
             builder.Services.AddScoped<IEstudianteRepository, ImplEstudianteRepository>();
-
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
