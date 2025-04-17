@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plataforma-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: plataformaservice
+  template:
+    metadata:
+      labels:
+        app: plataformaservice
+    spec:
+      containers:
+        - name: plataformaservice
+          image: rusok/plataforma:2.0
+          imagePullPolicy: IfNotPresent

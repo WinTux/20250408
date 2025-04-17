@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   webapp:
-    image: rusok/plataforma:1.1.1
+    image: rusok/plataforma:2.0
     build: .
     ports:
       - 8084:8080
