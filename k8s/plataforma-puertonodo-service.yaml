@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: plataforma-nodeport-service
+spec:
+  type: NodePort
+  selector:
+    app: plataformaservice
+  ports:
+    - name: plataformaservice
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
