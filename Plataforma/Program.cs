@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
+using Plataforma.ComunicacionSync.Http;
 using Plataforma.Repositories;
 
 namespace Plataforma
@@ -14,6 +15,7 @@ namespace Plataforma
 
             builder.Services.AddControllers().AddNewtonsoftJson(s=>s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddHttpClient<ICampusHistorialCliente, ImplHttpCampusHistorialCliente>();
             builder.Services.AddDbContext<InstitutoDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             // DbContext (agregar)

@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plataforma-deployment
+  name: campus-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: plataformaservice
+      app: campusservice
   template:
     metadata:
       labels:
-        app: plataformaservice
+        app: campusservice
     spec:
       containers:
-        - name: plataformaservice
-          image: rusok/plataforma:2.1
+        - name: campusservice
+          image: rusok/campus:1.0
           imagePullPolicy: IfNotPresent
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: plataforma-clusterip-service
+  name: campus-clusterip-service
 spec:
   type: ClusterIP
   selector:
-    app: plataformaservice
+    app: campusservice
   ports:
-    - name: plataformaservice
+    - name: campusservice
       protocol: TCP
       port: 8080
       targetPort: 8080

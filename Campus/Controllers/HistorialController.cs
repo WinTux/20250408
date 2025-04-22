@@ -24,7 +24,7 @@ namespace Campus.Controllers
         [HttpPost]
         public IActionResult AddHistorial()
         {
-            Debug.WriteLine("Llegó una petición por POST a Historial de Campus");
+            Console.WriteLine("Llegó una petición por POST a Historial de Campus");
             return Ok("Respuesta exitosa desde el controlador Historial (Campus)");
         }
     }

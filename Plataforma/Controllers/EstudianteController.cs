@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Plataforma.ComunicacionSync.Http;
 using Plataforma.DTO;
 using Plataforma.Models;
 using Plataforma.Repositories;
@@ -14,11 +15,13 @@ namespace Plataforma.Controllers
     {
         private readonly IEstudianteRepository _estudianteRepository;
         private readonly IMapper _mapper;
+        private readonly ICampusHistorialCliente _campusHistorialCliente;
 
-        public EstudianteController(IEstudianteRepository estudianteRepository, IMapper mapper)
+        public EstudianteController(IEstudianteRepository estudianteRepository, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
         {
             _estudianteRepository = estudianteRepository;
             _mapper = mapper;
+            _campusHistorialCliente = campusHistorialCliente;
         }
         [HttpGet] // localhost:5000/api/estudiante [GET]
         public ActionResult<IEnumerable<EstudianteReadDTO>> GetEstudiantes()
@@ -37,7 +40,7 @@ namespace Plataforma.Controllers
             return Ok(_mapper.Map<EstudianteReadDTO>(estudiante)); // 200 OK
         }
         [HttpPost] // localhost:5000/api/estudiante [POST]
-        public ActionResult<EstudianteReadDTO> CreateEstudiante([FromBody] EstudianteCreateDTO estudianteCreateDTO)
+        public async Task<ActionResult<EstudianteReadDTO>> CreateEstudiante([FromBody] EstudianteCreateDTO estudianteCreateDTO)
         {
             if (estudianteCreateDTO == null)
             {
@@ -47,6 +50,18 @@ namespace Plataforma.Controllers
             _estudianteRepository.CreateEstudiante(estudiante);
             _estudianteRepository.GuardarCambios();
             var estudianteReadDTO = _mapper.Map<EstudianteReadDTO>(estudiante);
+            try {
+                await _campusHistorialCliente.ComunicarseConCampus(estudianteReadDTO);
+                Console.WriteLine("Se ha enviado el estudiante al servicio de Campus (por POST desde Plataforma, Desde EstudianteController)");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma sincronizada: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma sincronizada (Excepción general): {ex.Message}");
+            }
             return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO); // 201 Created
         }
         [HttpPut("{codigo}")] // localhost:5000/api/estudiante/{id} [PUT]
