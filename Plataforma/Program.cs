@@ -16,11 +16,22 @@ namespace Plataforma
             builder.Services.AddControllers().AddNewtonsoftJson(s=>s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddHttpClient<ICampusHistorialCliente, ImplHttpCampusHistorialCliente>();
-            builder.Services.AddDbContext<InstitutoDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
+            //builder.Services.AddDbContext<InstitutoDbContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             // DbContext (agregar)
             builder.Services.AddScoped<IEstudianteRepository, ImplEstudianteRepository>();
-            
+            if(builder.Environment.IsProduction())
+            {
+                Console.WriteLine("Entorno de producción detectado.");
+                builder.Services.AddDbContext<InstitutoDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("conexion_prod")));
+            }
+            else
+            {
+                Console.WriteLine("Entorno de desarrollo detectado.");
+                builder.Services.AddDbContext<InstitutoDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
+            }
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
