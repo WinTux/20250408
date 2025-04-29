@@ -1,4 +1,5 @@
 using AutoMapper;
+using Campus.ComunicacionAsync;
 using Campus.Conexion;
 using Campus.Eventos;
 using Campus.Repositories;
@@ -18,6 +19,7 @@ namespace Campus
             builder.Services.AddDbContext<CampusDbContext>(op => op.UseInMemoryDatabase("miDb"));
             builder.Services.AddScoped<IPerfilRepository, ImplPerfilRepository>();
             builder.Services.AddSingleton<IProcessadorDeEventos, ProcesadorDeEventos>();
+            builder.Services.AddHostedService<BusDeMensajesSuscriptor>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
