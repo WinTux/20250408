@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
+using Plataforma.ComunicacionAsync;
 using Plataforma.ComunicacionSync.Http;
 using Plataforma.Repositories;
 
@@ -20,7 +21,8 @@ namespace Plataforma
             //    options.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             // DbContext (agregar)
             builder.Services.AddScoped<IEstudianteRepository, ImplEstudianteRepository>();
-            if(builder.Environment.IsProduction())
+            builder.Services.AddSingleton<IBusDeMensajesCliente, ImplBusDeMensajesCliente>();
+            if (builder.Environment.IsProduction())
             {
                 Console.WriteLine("Entorno de producción detectado.");
                 builder.Services.AddDbContext<InstitutoDbContext>(options =>

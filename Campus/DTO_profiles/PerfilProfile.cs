@@ -10,6 +10,12 @@ namespace Campus.DTO_profiles
             CreateMap<Estudiante, EstudianteReadDTO>();
             CreateMap<Perfil, PerfilReadDTO>();
             CreateMap<PerfilCreateDTO, Perfil>();
+            CreateMap<EstudiantePublisherDTO, Estudiante>()
+                .ForMember(
+                    dest => dest.fci,
+                    opt => opt.MapFrom(src => src.ci)
+                );
+                
         }
     }
 }

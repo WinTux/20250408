@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Plataforma.ComunicacionAsync;
 using Plataforma.ComunicacionSync.Http;
 using Plataforma.DTO;
 using Plataforma.Models;
@@ -16,12 +17,14 @@ namespace Plataforma.Controllers
         private readonly IEstudianteRepository _estudianteRepository;
         private readonly IMapper _mapper;
         private readonly ICampusHistorialCliente _campusHistorialCliente;
+        private readonly IBusDeMensajesCliente _busDeMensajesCliente;
 
-        public EstudianteController(IEstudianteRepository estudianteRepository, IMapper mapper, ICampusHistorialCliente campusHistorialCliente)
+        public EstudianteController(IEstudianteRepository estudianteRepository, IMapper mapper, ICampusHistorialCliente campusHistorialCliente, IBusDeMensajesCliente busDeMensajesCliente)
         {
             _estudianteRepository = estudianteRepository;
             _mapper = mapper;
             _campusHistorialCliente = campusHistorialCliente;
+            _busDeMensajesCliente = busDeMensajesCliente;
         }
         [HttpGet] // localhost:5000/api/estudiante [GET]
         public ActionResult<IEnumerable<EstudianteReadDTO>> GetEstudiantes()
@@ -50,7 +53,9 @@ namespace Plataforma.Controllers
             _estudianteRepository.CreateEstudiante(estudiante);
             _estudianteRepository.GuardarCambios();
             var estudianteReadDTO = _mapper.Map<EstudianteReadDTO>(estudiante);
-            try {
+            #region Comunicación sync
+            try
+            {
                 await _campusHistorialCliente.ComunicarseConCampus(estudianteReadDTO);
                 Console.WriteLine("Se ha enviado el estudiante al servicio de Campus (por POST desde Plataforma, Desde EstudianteController)");
             }
@@ -62,6 +67,21 @@ namespace Plataforma.Controllers
             {
                 Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma sincronizada (Excepción general): {ex.Message}");
             }
+            #endregion
+
+            #region Comunicación async
+            try
+            {
+                var estudiantePublisherDTO = _mapper.Map<EstudiantePublisherDTO>(estudianteReadDTO);
+                estudiantePublisherDTO.tipoEvento = "estudiante_publicado";
+                _busDeMensajesCliente.PublicarNuevoEstudiante(estudiantePublisherDTO);
+                Console.WriteLine("Se ha enviado el estudiante al servicio de Campus (por POST desde Plataforma, Desde EstudianteController) ASYNC");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ocurrió un error al comunicarse con Campus de forma asíncrona: {ex.Message}");
+            }
+            #endregion
             return CreatedAtRoute(nameof(GetEstudianteById), new { id = estudianteReadDTO.id }, estudianteReadDTO); // 201 Created
         }
         [HttpPut("{codigo}")] // localhost:5000/api/estudiante/{id} [PUT]

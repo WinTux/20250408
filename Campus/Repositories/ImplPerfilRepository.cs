@@ -48,5 +48,10 @@ namespace Campus.Repositories
         {
             return (campusDbContext.SaveChanges() >= 0);
         }
+
+        public bool ExisteEstudianteForaneo(int fci)
+        {
+            return campusDbContext.Estudiantes.Any(e => e.fci == fci);
+        }
     }
 }

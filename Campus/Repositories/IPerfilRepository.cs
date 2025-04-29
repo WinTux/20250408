@@ -13,5 +13,7 @@ namespace Campus.Repositories
         Perfil GetPerfil(int idPerfil, int ci);
         void CrearPerfil(int ci, Perfil perfil);
         bool Guardar();
+
+        bool ExisteEstudianteForaneo(int fci);
     }
 }
