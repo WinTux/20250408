@@ -1,5 +1,6 @@
 using AutoMapper;
 using Campus.Conexion;
+using Campus.Eventos;
 using Campus.Repositories;
 using Microsoft.EntityFrameworkCore;
 namespace Campus
@@ -16,6 +17,7 @@ namespace Campus
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddDbContext<CampusDbContext>(op => op.UseInMemoryDatabase("miDb"));
             builder.Services.AddScoped<IPerfilRepository, ImplPerfilRepository>();
+            builder.Services.AddSingleton<IProcessadorDeEventos, ProcesadorDeEventos>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
